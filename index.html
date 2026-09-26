@@ -368,6 +368,180 @@
     .limit-group{padding:10px}
   }
 
+
+  /* ===== Control dimensional V3 ===== */
+  .dimensional-section{
+    display:grid;
+    gap:13px;
+  }
+  .dimensional-section-title{
+    margin:2px 0 0;
+    font-size:19px;
+    color:var(--prodiesa-navy);
+    font-weight:950;
+  }
+  .dimension-control-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    align-items:stretch;
+  }
+  .dimension-control{
+    border-radius:20px;
+    border:1px solid var(--line);
+    padding:19px;
+    background:#fff;
+    box-shadow:0 8px 24px rgba(17,55,100,.035);
+    min-width:0;
+  }
+  .dimension-control.final{
+    border-color:rgba(4,170,186,.30);
+    background:linear-gradient(145deg,#fbfeff,#eefafb);
+  }
+  .dimension-control.cut{
+    border-color:rgba(137,187,110,.42);
+    background:linear-gradient(145deg,#fdfffc,#f0f8ec);
+  }
+  .dimension-stage-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:15px;
+  }
+  .dimension-stage-kicker{
+    font-size:10px;
+    letter-spacing:.11em;
+    font-weight:950;
+    color:#78909b;
+  }
+  .dimension-stage-title{
+    margin-top:3px;
+    font-size:19px;
+    line-height:1.1;
+    font-weight:950;
+    color:var(--prodiesa-navy);
+  }
+  .dimension-control.final .dimension-stage-title{color:#087f8d}
+  .dimension-control.cut .dimension-stage-title{color:#557f43}
+
+  .tolerance-pill{
+    flex:0 0 auto;
+    border-radius:999px;
+    padding:7px 10px;
+    font-size:12px;
+    font-weight:950;
+    white-space:nowrap;
+    border:1px solid rgba(4,170,186,.20);
+    background:rgba(255,255,255,.78);
+    color:var(--prodiesa-navy);
+  }
+  .dimension-control.cut .tolerance-pill{
+    border-color:rgba(137,187,110,.34);
+  }
+
+  .nominal-box{
+    padding:14px 0 16px;
+    border-top:1px solid rgba(17,55,100,.08);
+    border-bottom:1px solid rgba(17,55,100,.08);
+  }
+  .nominal-label{
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:.08em;
+    color:#6f8095;
+    margin-bottom:6px;
+  }
+  .nominal-mm{
+    font-size:clamp(29px,4.8vw,43px);
+    line-height:1.03;
+    letter-spacing:-1px;
+    font-weight:950;
+    color:var(--prodiesa-navy);
+    overflow-wrap:anywhere;
+  }
+  .dimension-control.final .nominal-mm{color:#087f8d}
+  .dimension-control.cut .nominal-mm{color:#557f43}
+  .nominal-m{
+    margin-top:6px;
+    font-size:13px;
+    color:#73849a;
+    font-weight:800;
+  }
+
+  .range-title{
+    margin-top:14px;
+    margin-bottom:8px;
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:.07em;
+    color:#718198;
+  }
+  .range-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+  .range-card{
+    min-width:0;
+    padding:12px;
+    border-radius:14px;
+    background:#fff;
+    border:1px solid var(--line);
+  }
+  .range-card.max{
+    border-color:rgba(4,170,186,.28);
+  }
+  .range-card.min{
+    border-color:rgba(137,187,110,.38);
+  }
+  .range-label{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-bottom:6px;
+  }
+  .range-label strong{
+    font-size:15px;
+    font-weight:950;
+    letter-spacing:.03em;
+  }
+  .range-card.max .range-label strong{color:#087f8d}
+  .range-card.min .range-label strong{color:#5d853f}
+  .range-label span{
+    font-size:10px;
+    font-weight:800;
+    color:#77889d;
+  }
+  .range-mm{
+    font-size:20px;
+    line-height:1.1;
+    color:var(--prodiesa-navy);
+    font-weight:950;
+    overflow-wrap:anywhere;
+  }
+  .range-m{
+    margin-top:4px;
+    font-size:10px;
+    color:#8592a4;
+    font-weight:750;
+  }
+  .dimension-note{
+    margin-top:11px;
+    font-size:10px;
+    line-height:1.35;
+    color:#7c8b9e;
+  }
+
+  @media(max-width:760px){
+    .dimension-control-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:430px){
+    .dimension-control{padding:16px}
+    .nominal-mm{font-size:29px}
+    .range-mm{font-size:18px}
+  }
+
 </style>
 </head>
 
@@ -681,7 +855,8 @@
       ["Material",material],
       ["Forma",m["Forma"]],
       ["Acabado",m["Acabado"]],
-      ["Espesor",blank(m["Espesor (mm)"]) ? "" : m["Espesor (mm)"] + " mm"]
+      ["Espesor",blank(m["Espesor (mm)"]) ? "" : m["Espesor (mm)"] + " mm"],
+      ["Desbaste",blank(m["Desbaste"]) ? "" : m["Desbaste"] + " mm"]
     ].filter(([,v])=>!blank(v));
 
     const a = m["Ancho en metros"];
@@ -689,70 +864,111 @@
     const ca = first(m,["Ancho al CORTE(mts)","Ancho al CORTE (mts)","Ancho al CORTE"]);
     const cl = first(m,["Largo al CORTE (mts)","Largo al CORTE(mts)","Largo al CORTE"]);
 
-    const finalMM = (num(a)!==null && num(l)!==null)
-      ? (isCircle(m) ? "Ø " + millimeters(a) : pairMM(a,l)) : "";
-    const finalM = (num(a)!==null && num(l)!==null)
-      ? (isCircle(m) ? "Ø " + meters(a) : pairM(a,l)) : "";
-    const cutMM = (num(ca)!==null && num(cl)!==null)
-      ? (isCircle(m) ? "Ø " + millimeters(ca) : pairMM(ca,cl)) : "";
-    const cutM = (num(ca)!==null && num(cl)!==null)
-      ? (isCircle(m) ? "Ø " + meters(ca) : pairM(ca,cl)) : "";
-
-    const finalBlock = finalMM ? `
-      <div class="measure final-measure">
-        <div class="measure-kicker">DIMENSIÓN DE PRODUCTO</div>
-        <div class="measure-title">Medida final</div>
-        <div class="measure-main">${html(finalMM)}</div>
-        ${finalM ? `<div class="measure-sub">${html(finalM)}</div>` : ""}
-      </div>` : "";
-
-    const cutBlock = cutMM ? `
-      <div class="measure cut">
-        <div class="measure-kicker">DIMENSIÓN PARA CORTE</div>
-        <div class="measure-title">Medida al corte</div>
-        <div class="measure-main">${html(cutMM)}</div>
-        ${cutM ? `<div class="measure-sub">${html(cutM)}</div>` : ""}
-      </div>` : "";
-
     const finalTol = first(m,[
       "Tolerancia Final (mm)","Tol. (+/-)","Tol.\n(+/-)","Tolerancia final"
     ]);
     const cutTol = first(m,[
       "Tolerancia Corte (mm)","Tolerancia de corte","Tol. Corte (+/-)"
     ]);
-    const tolRows = [
-      ["Tolerancia medida final",toleranceDisplay(finalTol)],
-      ["Tolerancia de corte",toleranceDisplay(cutTol)]
-    ].filter(([,v])=>!blank(v));
 
-    const maxA = first(m,["Ancho CORTE Max (mts)"]);
-    const maxL = first(m,["Largo CORTE  Max (mts)","Largo CORTE Max (mts)"]);
-    const minA = first(m,["Ancho CORTE Min (mts)"]);
-    const minL = first(m,["Largo CORTE Min (mts)"]);
+    const finalMaxA = first(m,["Ancho FINAL Max","Ancho FINAL Max (mts)","Ancho Final Max (mts)","Ancho Final Max"]);
+    const finalMaxL = first(m,["Largo FINAL Max","Largo FINAL Max (mts)","Largo Final Max (mts)","Largo Final Max"]);
+    const finalMinA = first(m,["Ancho FINAL Min","Ancho FINAL Min (mts)","Ancho Final Min (mts)","Ancho Final Min"]);
+    const finalMinL = first(m,["Largo FINAL Min","Largo FINAL Min (mts)","Largo Final Min (mts)","Largo Final Min"]);
 
-    const maxLimits = [
-      [{ tag:"MAX", name:"Ancho CORTE" }, maxA],
-      [{ tag:"MAX", name:"Largo CORTE" }, maxL]
-    ].filter(([,v])=>!blank(v));
-    const minLimits = [
-      [{ tag:"MIN", name:"Ancho CORTE" }, minA],
-      [{ tag:"MIN", name:"Largo CORTE" }, minL]
-    ].filter(([,v])=>!blank(v));
+    const cutMaxA = first(m,["Ancho CORTE Max (mts)","Ancho CORTE Max"]);
+    const cutMaxL = first(m,["Largo CORTE  Max (mts)","Largo CORTE Max (mts)","Largo CORTE Max"]);
+    const cutMinA = first(m,["Ancho CORTE Min (mts)","Ancho CORTE Min"]);
+    const cutMinL = first(m,["Largo CORTE Min (mts)","Largo CORTE Min"]);
 
-    const limitGroup = (label, tone, rows) => rows.length ? `
-      <div class="limit-group ${tone}">
-        <div class="limit-group-title"><strong>${label}</strong><span>${label === "MAX" ? "Límite superior permitido" : "Límite inferior permitido"}</span></div>
-        <div class="limits">
-          ${rows.map(([meta,v])=>`<div class="limit ${tone}">
-            <div class="limit-head">
-              <strong class="limit-tag">${html(meta.tag)}</strong>
-              <span class="limit-name">${html(meta.name)}</span>
-            </div>
-            <div class="limit-value-mm">${html(millimeters(v))}</div>
-            <div class="limit-value-m">${html(meters(v))}</div>
-          </div>`).join("")}
+    const dimMM = (x,y) => {
+      if(num(x)===null && num(y)===null) return "";
+      if(isCircle(m) && num(x)!==null) return "Ø " + millimeters(x);
+      if(num(x)!==null && num(y)!==null) return pairMM(x,y);
+      if(num(x)!==null) return "Ancho " + millimeters(x);
+      return "Largo " + millimeters(y);
+    };
+
+    const dimM = (x,y) => {
+      if(num(x)===null && num(y)===null) return "";
+      if(isCircle(m) && num(x)!==null) return "Ø " + meters(x);
+      if(num(x)!==null && num(y)!==null) return pairM(x,y);
+      if(num(x)!==null) return "Ancho " + meters(x);
+      return "Largo " + meters(y);
+    };
+
+    const rangeCard = (label, tone, x, y) => {
+      const mm = dimMM(x,y);
+      const mt = dimM(x,y);
+      if(!mm) return "";
+      return `<div class="range-card ${tone}">
+        <div class="range-label">
+          <strong>${label}</strong>
+          <span>${label === "MAX" ? "máximo permitido" : "mínimo permitido"}</span>
         </div>
-      </div>` : "";
+        <div class="range-mm">${html(mm)}</div>
+        ${mt ? `<div class="range-m">${html(mt)}</div>` : ""}
+      </div>`;
+    };
+
+    const dimensionCard = ({
+      tone, kicker, title, nominalA, nominalL, tolerance,
+      maxA, maxL, minA, minL
+    }) => {
+      const nominalMM = dimMM(nominalA,nominalL);
+      const nominalM = dimM(nominalA,nominalL);
+      const maxCard = rangeCard("MAX","max",maxA,maxL);
+      const minCard = rangeCard("MIN","min",minA,minL);
+      const hasAny = nominalMM || !blank(tolerance) || maxCard || minCard;
+      if(!hasAny) return "";
+
+      return `<section class="dimension-control ${tone}">
+        <div class="dimension-stage-head">
+          <div>
+            <div class="dimension-stage-kicker">${kicker}</div>
+            <div class="dimension-stage-title">${title}</div>
+          </div>
+          ${!blank(tolerance) ? `<div class="tolerance-pill">± ${html(String(tolerance))} mm</div>` : ""}
+        </div>
+
+        ${nominalMM ? `<div class="nominal-box">
+          <div class="nominal-label">NOMINAL</div>
+          <div class="nominal-mm">${html(nominalMM)}</div>
+          ${nominalM ? `<div class="nominal-m">${html(nominalM)}</div>` : ""}
+        </div>` : ""}
+
+        ${(maxCard || minCard) ? `
+          <div class="range-title">RANGO PERMITIDO</div>
+          <div class="range-grid">${maxCard}${minCard}</div>
+        ` : ""}
+      </section>`;
+    };
+
+    const finalCard = dimensionCard({
+      tone:"final",
+      kicker:"PRODUCTO TERMINADO",
+      title:"Medida final",
+      nominalA:a,
+      nominalL:l,
+      tolerance:finalTol,
+      maxA:finalMaxA,
+      maxL:finalMaxL,
+      minA:finalMinA,
+      minL:finalMinL
+    });
+
+    const cutCard = dimensionCard({
+      tone:"cut",
+      kicker:"PROCESO DE CORTE",
+      title:"Medida al corte",
+      nominalA:ca,
+      nominalL:cl,
+      tolerance:cutTol,
+      maxA:cutMaxA,
+      maxL:cutMaxL,
+      minA:cutMinA,
+      minL:cutMinL
+    });
 
     $("detail").innerHTML = `
       ${info.length ? `<section class="panel info-panel">
@@ -762,22 +978,12 @@
         </div>
       </section>` : ""}
 
-      ${(finalBlock || cutBlock) ? `<section class="measure-grid">${finalBlock}${cutBlock}</section>` : ""}
-
-      ${tolRows.length ? `<section class="panel tolerance-panel">
-        <h3 class="section-title">Tolerancias dimensionales</h3>
-        <div class="tol-list">
-          ${tolRows.map(([k,v])=>`<div class="tol-row"><span>${html(k)}</span><strong>${html(v)}</strong></div>`).join("")}
-        </div>
-      </section>` : ""}
-
-      ${(maxLimits.length || minLimits.length) ? `<section class="panel limits-panel">
-        <h3 class="section-title">Límites de corte</h3>
-        <div class="limit-groups">
-          ${limitGroup("MAX","max",maxLimits)}
-          ${limitGroup("MIN","min",minLimits)}
-        </div>
-      </section>` : ""}
+      ${(finalCard || cutCard) ? `
+        <section class="dimensional-section">
+          <h3 class="dimensional-section-title">Control dimensional</h3>
+          <div class="dimension-control-grid">${finalCard}${cutCard}</div>
+        </section>
+      ` : ""}
     `;
 
     show("detail");
