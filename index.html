@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b2a59" />
+  <title>PRODIESA | Portal de Producción</title>
+
+  <style>
+    :root{
+      --navy:#0b2a59;
+      --blue:#1769d2;
+      --green:#159447;
+      --green-soft:#eaf8ef;
+      --bg:#f5f8fc;
+      --card:#fff;
+      --text:#10213f;
+      --muted:#6b7a91;
+      --line:#dce5ef;
+      --shadow:0 8px 24px rgba(19,50,90,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+
+    .topbar{
+      position:sticky; top:0; z-index:40;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      min-height:66px; padding:12px 18px;
+      background:rgba(255,255,255,.97);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-logo{
+      font-size:26px;font-weight:950;font-style:italic;letter-spacing:-1px;
+      color:var(--navy);white-space:nowrap
+    }
+    .brand-sep{width:3px;height:30px;background:#19a651;border-radius:3px}
+    .brand-title{font-size:16px;font-weight:850;white-space:nowrap}
+    .sync{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);white-space:nowrap}
+    .sync-dot{width:9px;height:9px;border-radius:99px;background:#20b15a;box-shadow:0 0 0 4px rgba(32,177,90,.12)}
+
+    .desktop-nav{
+      display:flex;gap:4px;padding:9px 16px;overflow:auto;
+      background:#fff;border-bottom:1px solid var(--line)
+    }
+    .nav-item{
+      border:0;background:transparent;color:#56667d;padding:9px 12px;border-radius:11px;
+      min-width:max-content;text-align:left
+    }
+    .nav-item strong{display:block;font-size:13px}
+    .nav-item span{display:block;font-size:10px;color:#909db0;margin-top:2px}
+    .nav-item.active{background:var(--navy);color:#fff}
+    .nav-item.active span{color:#cfdaea}
+
+    main{width:min(1120px,calc(100% - 26px));margin:0 auto;padding:24px 0 92px}
+    .view{display:none}.view.active{display:block}
+
+    .eyebrow{color:var(--blue);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+    h1{margin:0;color:var(--navy);font-size:clamp(30px,4vw,44px);letter-spacing:-1.2px;line-height:1.04}
+    .subtitle{margin:7px 0 0;color:var(--muted);font-size:14px}
+
+    .search-card,.panel,.model-card,.coming-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)
+    }
+    .search-card{padding:15px;margin:20px 0 14px}
+    .search-row{display:grid;grid-template-columns:minmax(260px,1fr) 185px 160px;gap:9px}
+    input,select{
+      width:100%;min-height:47px;border:1px solid #cdd8e5;border-radius:12px;
+      background:#fff;color:var(--text);padding:0 13px;outline:none
+    }
+    input:focus,select:focus{border-color:#75a8df;box-shadow:0 0 0 3px rgba(23,105,210,.09)}
+    .search-input{font-size:15px}
+    .results-meta{display:flex;justify-content:space-between;gap:12px;margin:15px 2px 11px;color:var(--muted);font-size:12px}
+    .results-meta strong{color:var(--navy)}
+
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+    .model-card{width:100%;border:1px solid var(--line);padding:15px;text-align:left;transition:.16s ease}
+    .model-card:hover{transform:translateY(-2px);border-color:#b9cfe8}
+    .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .model-code{font-size:20px;font-weight:950;color:var(--navy);overflow-wrap:anywhere}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:var(--green-soft);color:#13823d;font-size:11px;font-weight:850;white-space:nowrap}
+    .small-label{color:#7b899d;font-size:11px}
+    .small-value{color:var(--text);font-size:14px;font-weight:800;margin-top:2px;overflow-wrap:anywhere}
+    .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+
+    .back{border:0;background:transparent;color:#607189;font-weight:750;padding:0;margin-bottom:13px}
+    .detail-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .detail-title h1{font-size:clamp(34px,6vw,52px);overflow-wrap:anywhere}
+    .detail-content{display:grid;gap:13px}
+    .panel{padding:17px}
+    .basic-grid{display:grid;grid-template-columns:130px 1fr;gap:10px 14px}
+    .label{color:#74839a;font-size:12px}
+    .value{font-weight:800;overflow-wrap:anywhere}
+
+    .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .chip{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px;min-height:80px}
+    .chip .value{font-size:18px;color:var(--navy);margin-top:4px}
+
+    .measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .measure{
+      border:1px solid #bdd8f2;border-radius:18px;padding:18px;
+      background:linear-gradient(135deg,#f8fbff,#eef6ff)
+    }
+    .measure.cut{border-color:#bfe3ca;background:linear-gradient(135deg,#fbfffc,#eefbf2)}
+    .measure-title{font-weight:900;color:var(--navy);font-size:15px;margin-bottom:8px}
+    .measure-main{font-size:clamp(27px,5vw,41px);line-height:1;font-weight:950;color:#0b4cac;letter-spacing:-1px;overflow-wrap:anywhere}
+    .measure-sub{margin-top:7px;font-size:19px;font-weight:800;color:#20324f;overflow-wrap:anywhere}
+
+    .section-title{margin:0 0 11px;color:var(--navy);font-size:17px}
+    .tol-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid var(--line)}
+    .tol-row:first-child{border-top:0}
+    .tol-row span{color:#6c7c92}.tol-row strong{color:var(--navy)}
+    .limits{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .limit{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fbfcfe}
+    .limit .value{font-size:18px;color:var(--navy)}
+    .limit-mm{font-size:11px;color:#7a899e;margin-top:3px}
+
+    .empty,.error{
+      grid-column:1/-1;text-align:center;background:#fff;border:1px dashed #c9d6e5;border-radius:17px;
+      padding:34px 18px;color:var(--muted)
+    }
+    .error{border-style:solid;border-color:#efc4c4;color:#8d2727;background:#fff8f8}
+
+    .coming{display:grid;place-items:center;min-height:56vh;text-align:center}
+    .coming-card{width:min(610px,100%);padding:42px 22px}
+    .coming-pill{display:inline-block;margin-top:12px;padding:7px 12px;border-radius:999px;background:#eef4fb;color:#60718a;font-size:12px;font-weight:850}
+
+    .mobile-nav{display:none}
+
+    @media(max-width:850px){
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .search-row{grid-template-columns:1fr 1fr}
+      .search-input{grid-column:1/-1}
+      .desktop-nav{display:none}
+    }
+    @media(max-width:620px){
+      main{width:calc(100% - 18px);padding-top:18px;padding-bottom:105px}
+      .topbar{padding:11px 12px;min-height:62px}
+      .brand-logo{font-size:22px}.brand-sep{height:27px}.brand-title{font-size:14px}
+      .sync span:last-child{display:none}
+      .cards{grid-template-columns:1fr}
+      .search-row{grid-template-columns:1fr}.search-input{grid-column:auto}
+      .results-meta{flex-direction:column;align-items:flex-start}
+      .model-code{font-size:23px}
+      .detail-title{align-items:flex-start}
+      .detail-title h1{font-size:35px}
+      .basic-grid{grid-template-columns:102px 1fr}
+      .chips{grid-template-columns:1fr 1fr}
+      .chips .chip:last-child:nth-child(odd){grid-column:1/-1}
+      .measure-grid{grid-template-columns:1fr}
+      .measure-main{font-size:31px}
+      .measure-sub{font-size:18px}
+      .limits{grid-template-columns:1fr 1fr}
+      .mobile-nav{
+        position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);
+        background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+        padding:7px 5px calc(7px + env(safe-area-inset-bottom))
+      }
+      .mobile-nav button{
+        border:0;background:transparent;color:#6e7c92;border-radius:11px;min-height:48px;
+        padding:4px 2px;font-size:10px;font-weight:850
+      }
+      .mobile-nav button.active{background:#edf5ff;color:var(--navy)}
+      .mobile-nav b{display:block;font-size:18px;line-height:1.1;margin-bottom:3px}
+    }
+    @media(max-width:410px){
+      .brand-title{display:none}
+      .limits{grid-template-columns:1fr}
+      .chips{grid-template-columns:1fr}
+      .chips .chip:last-child:nth-child(odd){grid-column:auto}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">PRODIESA</div>
+      <div class="brand-sep"></div>
+      <div class="brand-title">Portal de Producción</div>
+    </div>
+    <div class="sync" title="Actualización automática">
+      <span class="sync-dot"></span>
+      <span id="syncText">Conectando…</span>
+    </div>
+  </header>
+
+  <nav class="desktop-nav">
+    <button class="nav-item active" data-route="models"><strong>Lista de Modelos</strong></button>
+    <button class="nav-item" data-route="docs"><strong>Documentación</strong><span>Próximamente</span></button>
+    <button class="nav-item" data-route="drawings"><strong>Planos / Dibujos técnicos</strong><span>Próximamente</span></button>
+    <button class="nav-item" data-route="production"><strong>Producción</strong><span>Próximamente</span></button>
+    <button class="nav-item" data-route="plans"><strong>Planes de Producción</strong><span>Próximamente</span></button>
+    <button class="nav-item" data-route="quality"><strong>Rechazo / Calidad</strong><span>Próximamente</span></button>
+  </nav>
+
+  <main>
+    <section id="modelsView" class="view active">
+      <div class="eyebrow">Catálogo autorizado</div>
+      <h1>Lista de Modelos</h1>
+      <p class="subtitle">Consulta de modelos activos para piso de producción.</p>
+
+      <div class="search-card">
+        <div class="search-row">
+          <input id="search" class="search-input" type="search" placeholder="Buscar modelo, cliente, descripción o artículo…" autocomplete="off">
+          <select id="client"><option value="">Todos los clientes</option></select>
+          <select id="thickness"><option value="">Todos los espesores</option></select>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <div><strong id="count">0</strong> modelos encontrados</div>
+        <div id="updated">Última actualización: —</div>
+      </div>
+
+      <div id="cards" class="cards"></div>
+    </section>
+
+    <section id="detailView" class="view">
+      <button id="back" class="back">← Volver a Lista de Modelos</button>
+      <div class="detail-title">
+        <h1 id="detailModel">—</h1>
+        <span class="badge">● Activo</span>
+      </div>
+      <div id="detail" class="detail-content"></div>
+    </section>
+
+    <section id="comingView" class="view coming">
+      <div class="coming-card">
+        <div class="eyebrow">Portal de Producción</div>
+        <h1 id="comingTitle">Próximamente</h1>
+        <p class="subtitle">Este módulo ya está contemplado y se habilitará en una siguiente etapa.</p>
+        <span class="coming-pill">Próximamente</span>
+      </div>
+    </section>
+  </main>
+
+  <nav class="mobile-nav">
+    <button class="active" data-route="models"><b>▣</b>Modelos</button>
+    <button data-route="docs"><b>▤</b>Docs</button>
+    <button data-route="drawings"><b>⌗</b>Planos</button>
+    <button data-route="production"><b>▥</b>Producción</button>
+    <button data-route="more"><b>•••</b>Más</button>
+  </nav>
+
+<script>
+  /*
+    1) Despliega Code.gs como Web App en Google Apps Script.
+    2) Copia la URL terminada en /exec.
+    3) Pégala abajo entre comillas.
+  */
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzK90whpc-rNz3QVRuW0aaKMSEgebGV0zCKQy2B3TJWte7Jgyi1xWeiVtL2qEVm01n15A/exec";
+
+  const REFRESH_MS = 10000;
+  let models = [];
+  let selectedModelName = "";
+  let jsonpScript = null;
+  let jsonpTimer = null;
+
+  const $ = id => document.getElementById(id);
+  const blank = v => v === undefined || v === null || String(v).trim() === "";
+  const norm = v => String(v ?? "").trim().toLocaleLowerCase("es-MX");
+  const num = v => {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : null;
+  };
+  const html = v => String(v ?? "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  function first(obj, keys){
+    for(const key of keys) if(!blank(obj[key])) return obj[key];
+    return "";
+  }
+
+  function meters(v){
+    const x = num(v);
+    if(x === null) return "";
+    return x.toFixed(4).replace(/0+$/,"").replace(/\.$/,"") + " m";
+  }
+
+  function millimeters(v){
+    const x = num(v);
+    if(x === null) return "";
+    const mm = x * 1000;
+    return mm.toFixed(1).replace(/\.0$/,"") + " mm";
+  }
+
+  function pairM(a,b){
+    if(num(a) === null || num(b) === null) return "";
+    return meters(a).replace(" m","") + " × " + meters(b);
+  }
+
+  function pairMM(a,b){
+    if(num(a) === null || num(b) === null) return "";
+    return millimeters(a).replace(" mm","") + " × " + millimeters(b);
+  }
+
+  function isCircle(m){
+    return norm(m["Forma"]).includes("círc") || norm(m["Forma"]).includes("circul");
+  }
+
+  function isOval(m){
+    return norm(m["Forma"]).includes("oval");
+  }
+
+  function toleranceDisplay(v){
+    if(blank(v)) return "";
+    const x = num(v);
+    if(x === null) return "±" + v;
+    // Si el Sheet captura la tolerancia en metros (ej. 0.001), se presenta en mm.
+    if(Math.abs(x) < 0.1) return "±" + millimeters(x);
+    // Si Ingeniería captura directamente mm (ej. 1), se conserva como mm.
+    return "±" + x + " mm";
+  }
+
+  function loadData(){
+    if(!APPS_SCRIPT_URL.startsWith("https://script.google.com/")){
+      showError("Falta pegar la URL /exec de Google Apps Script dentro de index.html.");
+      return;
+    }
+
+    if(jsonpScript) jsonpScript.remove();
+    clearTimeout(jsonpTimer);
+
+    jsonpScript = document.createElement("script");
+    jsonpScript.src = APPS_SCRIPT_URL
+      + "?callback=receiveModels"
+      + "&t=" + Date.now();
+
+    jsonpScript.onerror = () => {
+      if(!models.length) showError("No se pudo conectar con ModelosLI.");
+      $("syncText").textContent = "Sin conexión";
+    };
+
+    document.body.appendChild(jsonpScript);
+
+    jsonpTimer = setTimeout(() => {
+      if(!models.length) showError("La consulta está tardando demasiado. Revisa el despliegue de Apps Script.");
+    }, 8000);
+  }
+
+  window.receiveModels = function(payload){
+    clearTimeout(jsonpTimer);
+
+    if(!payload || payload.ok !== true){
+      const msg = payload?.error || "Respuesta inválida del backend.";
+      showError(msg);
+      $("syncText").textContent = "Error";
+      return;
+    }
+
+    models = Array.isArray(payload.data) ? payload.data : [];
+    models.sort((a,b) => String(a["Modelo"] ?? "").localeCompare(String(b["Modelo"] ?? ""),"es",{numeric:true}));
+
+    rebuildFilters();
+    renderCards();
+    updateClock(payload.updatedAt);
+
+    if(selectedModelName){
+      const refreshed = models.find(x => String(x["Modelo"]) === selectedModelName);
+      if(refreshed) renderDetail(refreshed, false);
+    }
+  };
+
+  function updateClock(serverDate){
+    const d = serverDate ? new Date(serverDate) : new Date();
+    const time = d.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    $("updated").textContent = "Última actualización: " + time;
+    $("syncText").textContent = time;
+  }
+
+  function showError(message){
+    $("cards").innerHTML = `<div class="error">${html(message)}</div>`;
+  }
+
+  function rebuildFilters(){
+    const currentClient = $("client").value;
+    const currentThickness = $("thickness").value;
+
+    const clients = [...new Set(models.map(m => m["Cliente"]).filter(v => !blank(v)))]
+      .sort((a,b)=>String(a).localeCompare(String(b),"es"));
+
+    const thicknesses = [...new Set(models.map(m => m["Espesor (mm)"]).filter(v => !blank(v)))]
+      .sort((a,b)=>Number(a)-Number(b));
+
+    $("client").innerHTML = `<option value="">Todos los clientes</option>` +
+      clients.map(v=>`<option value="${html(v)}">${html(v)}</option>`).join("");
+
+    $("thickness").innerHTML = `<option value="">Todos los espesores</option>` +
+      thicknesses.map(v=>`<option value="${html(v)}">${html(v)} mm</option>`).join("");
+
+    if(clients.includes(currentClient)) $("client").value = currentClient;
+    if(thicknesses.map(String).includes(currentThickness)) $("thickness").value = currentThickness;
+  }
+
+  function renderCards(){
+    const q = norm($("search").value);
+    const client = $("client").value;
+    const thickness = $("thickness").value;
+
+    const filtered = models.filter(m => {
+      const text = norm([
+        m["Modelo"],m["Cliente"],m["Descripción"],
+        m["Artículo Corte"],m["Artículo CORCOR"],m["Artículo PT"],
+        m["ID Interno Corte"],m["ID Interno CanBis"],m["ID Interno PT"]
+      ].join(" "));
+      return (!q || text.includes(q))
+        && (!client || String(m["Cliente"]) === client)
+        && (!thickness || String(m["Espesor (mm)"]) === thickness);
+    });
+
+    $("count").textContent = filtered.length;
+
+    if(!filtered.length){
+      $("cards").innerHTML = `<div class="empty">No se encontraron modelos con esos filtros.</div>`;
+      return;
+    }
+
+    $("cards").innerHTML = filtered.map((m,i) => {
+      const a = m["Ancho en metros"], l = m["Largo en metros"];
+      const finalM = isCircle(m) ? (num(a)!==null ? "Ø " + meters(a) : "") : pairM(a,l);
+      const finalMM = isCircle(m) ? (num(a)!==null ? "Ø " + millimeters(a) : "") : pairMM(a,l);
+
+      return `
+      <button class="model-card" data-i="${i}">
+        <div class="card-top">
+          <div class="model-code">${html(m["Modelo"])}</div>
+          <span class="badge">● Activo</span>
+        </div>
+        ${!blank(m["Cliente"]) ? `<div class="small-label">Cliente</div><div class="small-value">${html(m["Cliente"])}</div>` : ""}
+        <div class="card-grid">
+          ${!blank(m["Espesor (mm)"]) ? `<div><div class="small-label">Espesor</div><div class="small-value">${html(m["Espesor (mm)"])} mm</div></div>` : ""}
+          ${finalM ? `<div><div class="small-label">Medida final</div><div class="small-value">${html(finalM)}</div></div>` : ""}
+          ${finalMM ? `<div><div class="small-label">Medida final (mm)</div><div class="small-value">${html(finalMM)}</div></div>` : ""}
+          ${!blank(m["Acabado"]) ? `<div><div class="small-label">Acabado</div><div class="small-value">${html(m["Acabado"])}</div></div>` : ""}
+        </div>
+      </button>`;
+    }).join("");
+
+    document.querySelectorAll(".model-card").forEach(card => {
+      card.onclick = () => renderDetail(filtered[Number(card.dataset.i)], true);
+    });
+  }
+
+  function renderDetail(m, scroll=true){
+    selectedModelName = String(m["Modelo"] ?? "");
+    $("detailModel").textContent = selectedModelName || "Modelo";
+
+    const basics = [
+      ["Cliente",m["Cliente"]],
+      ["Descripción",m["Descripción"]]
+    ].filter(([,v])=>!blank(v));
+
+    const chips = [
+      ["Forma",m["Forma"]],
+      ["Acabado",m["Acabado"]],
+      ["Espesor",blank(m["Espesor (mm)"]) ? "" : m["Espesor (mm)"] + " mm"]
+    ].filter(([,v])=>!blank(v));
+
+    const a = m["Ancho en metros"];
+    const l = m["Largo en metros"];
+    const ca = first(m,["Ancho al CORTE(mts)","Ancho al CORTE (mts)","Ancho al CORTE"]);
+    const cl = first(m,["Largo al CORTE (mts)","Largo al CORTE(mts)","Largo al CORTE"]);
+
+    const finalBlock = (num(a)!==null && num(l)!==null) ? `
+      <div class="measure">
+        <div class="measure-title">Medida final</div>
+        <div class="measure-main">${isCircle(m) ? "Ø " + html(meters(a)) : html(pairM(a,l))}</div>
+        <div class="measure-sub">${isCircle(m) ? "Ø " + html(millimeters(a)) : html(pairMM(a,l))}</div>
+      </div>` : "";
+
+    const cutBlock = (num(ca)!==null && num(cl)!==null) ? `
+      <div class="measure cut">
+        <div class="measure-title">Medida al corte</div>
+        <div class="measure-main">${isCircle(m) ? "Ø " + html(meters(ca)) : html(pairM(ca,cl))}</div>
+        <div class="measure-sub">${isCircle(m) ? "Ø " + html(millimeters(ca)) : html(pairMM(ca,cl))}</div>
+      </div>` : "";
+
+    const finalTol = first(m,["Tol. (+/-)","Tol.\n(+/-)","Tolerancia final"]);
+    const cutTol = first(m,["Tolerancia de corte","Tol. Corte (+/-)"]);
+    const tolRows = [
+      ["Tolerancia final",toleranceDisplay(finalTol)],
+      ["Tolerancia de corte",toleranceDisplay(cutTol)]
+    ].filter(([,v])=>!blank(v));
+
+    const maxA = first(m,["Ancho CORTE Max (mts)"]);
+    const maxL = first(m,["Largo CORTE  Max (mts)","Largo CORTE Max (mts)"]);
+    const minA = first(m,["Ancho CORTE Min (mts)"]);
+    const minL = first(m,["Largo CORTE Min (mts)"]);
+    const limits = [
+      ["Ancho CORTE Max",maxA],
+      ["Largo CORTE Max",maxL],
+      ["Ancho CORTE Min",minA],
+      ["Largo CORTE Min",minL]
+    ].filter(([,v])=>!blank(v));
+
+    $("detail").innerHTML = `
+      ${basics.length ? `<div class="panel"><div class="basic-grid">${
+        basics.map(([k,v])=>`<div class="label">${html(k)}</div><div class="value">${html(v)}</div>`).join("")
+      }</div></div>` : ""}
+
+      ${chips.length ? `<div class="chips">${
+        chips.map(([k,v])=>`<div class="chip"><div class="label">${html(k)}</div><div class="value">${html(v)}</div></div>`).join("")
+      }</div>` : ""}
+
+      ${(finalBlock || cutBlock) ? `<div class="measure-grid">${finalBlock}${cutBlock}</div>` : ""}
+
+      ${tolRows.length ? `<div class="panel">
+        <h3 class="section-title">Tolerancias</h3>
+        ${tolRows.map(([k,v])=>`<div class="tol-row"><span>${html(k)}</span><strong>${html(v)}</strong></div>`).join("")}
+      </div>` : ""}
+
+      ${limits.length ? `<div class="panel">
+        <h3 class="section-title">Máximos y mínimos de corte</h3>
+        <div class="limits">
+          ${limits.map(([k,v])=>`<div class="limit">
+            <div class="label">${html(k)}</div>
+            <div class="value">${html(meters(v))}</div>
+            <div class="limit-mm">${html(millimeters(v))}</div>
+          </div>`).join("")}
+        </div>
+      </div>` : ""}
+    `;
+
+    show("detail");
+    if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function show(view){
+    $("modelsView").classList.toggle("active",view==="models");
+    $("detailView").classList.toggle("active",view==="detail");
+    $("comingView").classList.toggle("active",view==="coming");
+  }
+
+  const titles = {
+    docs:"Documentación",
+    drawings:"Planos / Dibujos técnicos",
+    production:"Producción",
+    plans:"Planes de Producción",
+    quality:"Rechazo / Calidad",
+    more:"Más módulos"
+  };
+
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-route]");
+    if(!b) return;
+    const route = b.dataset.route;
+
+    document.querySelectorAll("[data-route]").forEach(x=>x.classList.remove("active"));
+
+    if(route==="models"){
+      document.querySelectorAll('[data-route="models"]').forEach(x=>x.classList.add("active"));
+      show("models");
+    }else{
+      document.querySelectorAll(`[data-route="${route}"]`).forEach(x=>x.classList.add("active"));
+      $("comingTitle").textContent = titles[route] || "Próximamente";
+      show("coming");
+    }
+  });
+
+  $("back").onclick = () => show("models");
+  $("search").oninput = renderCards;
+  $("client").onchange = renderCards;
+  $("thickness").onchange = renderCards;
+
+  loadData();
+  setInterval(loadData, REFRESH_MS);
+</script>
+</body>
+</html>
