@@ -123,6 +123,9 @@
     .tol-row span{color:#6c7c92}.tol-row strong{color:var(--navy)}
     .limits{display:grid;grid-template-columns:1fr 1fr;gap:9px}
     .limit{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fbfcfe}
+    .limit-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+    .limit-tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef6ff;color:var(--navy);font-size:11px;font-weight:900;letter-spacing:.03em}
+    .limit-name{font-size:12px;color:#61728a;font-weight:800}
     .limit .value{font-size:18px;color:var(--navy)}
     .limit-mm{font-size:11px;color:#7a899e;margin-top:3px}
 
@@ -282,6 +285,89 @@
     gap:12px;
   }
 
+
+
+  /* ===== Ficha de modelo V2: lectura rápida para producción ===== */
+  .compact-card-grid{align-items:start}
+  .card-field{min-width:0}
+  .client-chip{
+    max-width:45%;padding:5px 9px;border-radius:999px;
+    background:rgba(4,170,186,.09);border:1px solid rgba(4,170,186,.20);
+    color:#087b88;font-size:11px;font-weight:900;line-height:1.2;text-align:right;
+    overflow-wrap:anywhere
+  }
+  .measure-card-field{grid-column:1/-1;background:#f7fbfc;border-radius:11px;padding:10px 11px}
+  .measure-card-primary{font-size:17px!important;color:var(--prodiesa-navy)!important}
+  .small-subvalue{font-size:11px;color:#7c8ba0;margin-top:3px;font-weight:700}
+
+  .detail-title-main{min-width:0}
+  .detail-client{
+    color:var(--prodiesa-turquoise);font-size:12px;font-weight:950;
+    text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px
+  }
+  .detail-status{flex:0 0 auto}
+
+  .info-panel{padding:18px}
+  .info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+  .info-item{padding:13px 14px 13px 0;border-bottom:1px solid var(--line);min-width:0}
+  .info-item:nth-child(3n+2),.info-item:nth-child(3n+3){padding-left:14px}
+  .info-item .value{font-size:15px;color:var(--prodiesa-navy);margin-top:4px}
+
+  .measure-grid{align-items:stretch}
+  .measure{padding:20px;min-height:155px;display:flex;flex-direction:column;justify-content:center}
+  .measure.final-measure{border-color:rgba(4,170,186,.30);background:linear-gradient(135deg,#f8feff,#e9f8fa)}
+  .measure.cut{border-color:rgba(137,187,110,.38);background:linear-gradient(135deg,#fbfff9,#eef8e9)}
+  .measure-kicker{font-size:10px;font-weight:950;letter-spacing:.10em;color:#78909b;margin-bottom:5px}
+  .measure-title{font-size:16px;margin-bottom:10px}
+  .measure-main{font-size:clamp(31px,5.4vw,47px);line-height:1.02;color:var(--prodiesa-navy);letter-spacing:-1px}
+  .measure.final-measure .measure-main{color:#087f8d}
+  .measure.cut .measure-main{color:#4f7d3d}
+  .measure-sub{font-size:14px;color:#697b90;margin-top:8px;font-weight:800}
+
+  .tolerance-panel .section-title,.limits-panel .section-title,.info-panel .section-title{font-size:18px;margin-bottom:12px}
+  .tol-list{border-top:1px solid var(--line)}
+  .tol-row{padding:13px 0}
+  .tol-row span{font-weight:750;color:#586b82}
+  .tol-row strong{font-size:18px}
+
+  .limit-groups{display:grid;gap:13px}
+  .limit-group{border-radius:15px;padding:12px;border:1px solid var(--line);background:#fbfcfe}
+  .limit-group.max{background:rgba(4,170,186,.045);border-color:rgba(4,170,186,.18)}
+  .limit-group.min{background:rgba(137,187,110,.055);border-color:rgba(137,187,110,.23)}
+  .limit-group-title{display:flex;align-items:baseline;gap:8px;margin:0 2px 9px;color:#65768c}
+  .limit-group-title strong{font-size:17px;color:var(--prodiesa-navy);letter-spacing:.03em}
+  .limit-group.max .limit-group-title strong{color:#087f8d}
+  .limit-group.min .limit-group-title strong{color:#5d853f}
+  .limit-group-title span{font-size:11px;font-weight:750}
+  .limit{background:#fff;padding:13px 14px}
+  .limit.max{border-color:rgba(4,170,186,.22)}
+  .limit.min{border-color:rgba(137,187,110,.30)}
+  .limit-head{gap:7px;margin-bottom:7px}
+  .limit-tag{padding:0;background:transparent!important;border:0;font-size:14px;font-weight:950;color:var(--prodiesa-navy)}
+  .limit.max .limit-tag{color:#087f8d}
+  .limit.min .limit-tag{color:#5d853f}
+  .limit-name{font-size:12px;font-weight:850;color:#5e7189}
+  .limit-value-mm{font-size:22px;font-weight:950;color:var(--prodiesa-navy);line-height:1.1}
+  .limit-value-m{font-size:11px;color:#8391a3;margin-top:4px;font-weight:750}
+
+  @media(max-width:720px){
+    .info-grid{grid-template-columns:1fr 1fr}
+    .info-item:nth-child(n){padding:12px 10px 12px 0}
+    .info-item:nth-child(even){padding-left:10px}
+    .detail-title{
+      position:sticky;top:62px;z-index:25;background:rgba(244,249,250,.96);
+      backdrop-filter:blur(10px);padding:10px 0 9px;border-bottom:1px solid rgba(214,231,234,.88)
+    }
+    .detail-title h1{font-size:30px}
+  }
+  @media(max-width:430px){
+    .info-grid{grid-template-columns:1fr}
+    .info-item:nth-child(n){padding:11px 0}
+    .measure{min-height:140px;padding:17px}
+    .measure-main{font-size:30px}
+    .limit-group{padding:10px}
+  }
+
 </style>
 </head>
 
@@ -315,7 +401,7 @@
 
       <div class="search-card">
         <div class="search-row">
-          <input id="search" class="search-input" type="search" placeholder="Buscar modelo, cliente, descripción o artículo…" autocomplete="off">
+          <input id="search" class="search-input" type="search" placeholder="Buscar modelo, cliente, material, descripción o artículo…" autocomplete="off">
           <select id="client"><option value="">Todos los clientes</option></select>
           <select id="thickness"><option value="">Todos los espesores</option></select>
         </div>
@@ -332,19 +418,13 @@
     <section id="detailView" class="view">
       <button id="back" class="back">← Volver a Lista de Modelos</button>
       <div class="detail-title">
-        <h1 id="detailModel">—</h1>
-        <span class="badge">● Activo</span>
+        <div class="detail-title-main">
+          <div id="detailClient" class="detail-client">—</div>
+          <h1 id="detailModel">—</h1>
+        </div>
+        <span class="badge detail-status">● Activo</span>
       </div>
       <div id="detail" class="detail-content"></div>
-    </section>
-
-    <section id="comingView" class="view coming">
-      <div class="coming-card">
-        <div class="eyebrow">Portal de Producción</div>
-        <h1 id="comingTitle">Próximamente</h1>
-        <p class="subtitle">Este módulo ya está contemplado y se habilitará en una siguiente etapa.</p>
-        <span class="coming-pill">Próximamente</span>
-      </div>
     </section>
   </main>
 
@@ -542,9 +622,10 @@
 
     const filtered = models.filter(m => {
       const text = norm([
-        m["Modelo"],m["Cliente"],m["Descripción"],
-        m["Artículo Corte"],m["Artículo CORCOR"],m["Artículo PT"],
-        m["ID Interno Corte"],m["ID Interno CanBis"],m["ID Interno PT"]
+        m["Modelo"], m["Cliente"], m["Descripción"], m["Forma"], m["Acabado"],
+        m["Material / Tipo de Vidrio o Espejo"],
+        m["Artículo Corte"], m["Artículo CORCOR"], m["Artículo PT"],
+        m["ID Interno Corte"], m["ID Interno CanBis"], m["ID Interno PT"]
       ].join(" "));
       return (!q || text.includes(q))
         && (!client || String(m["Cliente"]) === client)
@@ -562,19 +643,23 @@
       const a = m["Ancho en metros"], l = m["Largo en metros"];
       const finalM = isCircle(m) ? (num(a)!==null ? "Ø " + meters(a) : "") : pairM(a,l);
       const finalMM = isCircle(m) ? (num(a)!==null ? "Ø " + millimeters(a) : "") : pairMM(a,l);
+      const material = first(m,["Material / Tipo de Vidrio o Espejo","Material"]);
 
       return `
-      <button class="model-card" data-i="${i}">
+      <button class="model-card" data-i="${i}" aria-label="Abrir ficha del modelo ${html(m["Modelo"])}">
         <div class="card-top">
-          <div class="model-code">${html(m["Modelo"])}</div>
-          <span class="badge">● Activo</span>
+          <div>
+            <div class="small-label">Modelo</div>
+            <div class="model-code">${html(m["Modelo"])}</div>
+          </div>
+          ${!blank(m["Cliente"]) ? `<div class="client-chip">${html(m["Cliente"])}</div>` : ""}
         </div>
-        ${!blank(m["Cliente"]) ? `<div class="small-label">Cliente</div><div class="small-value">${html(m["Cliente"])}</div>` : ""}
-        <div class="card-grid">
-          ${!blank(m["Espesor (mm)"]) ? `<div><div class="small-label">Espesor</div><div class="small-value">${html(m["Espesor (mm)"])} mm</div></div>` : ""}
-          ${finalM ? `<div><div class="small-label">Medida final</div><div class="small-value">${html(finalM)}</div></div>` : ""}
-          ${finalMM ? `<div><div class="small-label">Medida final (mm)</div><div class="small-value">${html(finalMM)}</div></div>` : ""}
-          ${!blank(m["Acabado"]) ? `<div><div class="small-label">Acabado</div><div class="small-value">${html(m["Acabado"])}</div></div>` : ""}
+
+        <div class="card-grid compact-card-grid">
+          ${!blank(material) ? `<div class="card-field"><div class="small-label">Material</div><div class="small-value">${html(material)}</div></div>` : ""}
+          ${!blank(m["Espesor (mm)"]) ? `<div class="card-field"><div class="small-label">Espesor</div><div class="small-value">${html(m["Espesor (mm)"])} mm</div></div>` : ""}
+          ${finalMM ? `<div class="card-field measure-card-field"><div class="small-label">Medida final</div><div class="small-value measure-card-primary">${html(finalMM)}</div>${finalM ? `<div class="small-subvalue">${html(finalM)}</div>` : ""}</div>` : ""}
+          ${!blank(m["Acabado"]) ? `<div class="card-field"><div class="small-label">Acabado</div><div class="small-value">${html(m["Acabado"])}</div></div>` : ""}
         </div>
       </button>`;
     }).join("");
@@ -587,13 +672,13 @@
   function renderDetail(m, scroll=true){
     selectedModelName = String(m["Modelo"] ?? "");
     $("detailModel").textContent = selectedModelName || "Modelo";
+    $("detailClient").textContent = blank(m["Cliente"]) ? "Modelo autorizado" : String(m["Cliente"]);
 
-    const basics = [
+    const material = first(m,["Material / Tipo de Vidrio o Espejo","Material"]);
+    const info = [
       ["Cliente",m["Cliente"]],
-      ["Descripción",m["Descripción"]]
-    ].filter(([,v])=>!blank(v));
-
-    const chips = [
+      ["Descripción",m["Descripción"]],
+      ["Material",material],
       ["Forma",m["Forma"]],
       ["Acabado",m["Acabado"]],
       ["Espesor",blank(m["Espesor (mm)"]) ? "" : m["Espesor (mm)"] + " mm"]
@@ -604,24 +689,39 @@
     const ca = first(m,["Ancho al CORTE(mts)","Ancho al CORTE (mts)","Ancho al CORTE"]);
     const cl = first(m,["Largo al CORTE (mts)","Largo al CORTE(mts)","Largo al CORTE"]);
 
-    const finalBlock = (num(a)!==null && num(l)!==null) ? `
-      <div class="measure">
+    const finalMM = (num(a)!==null && num(l)!==null)
+      ? (isCircle(m) ? "Ø " + millimeters(a) : pairMM(a,l)) : "";
+    const finalM = (num(a)!==null && num(l)!==null)
+      ? (isCircle(m) ? "Ø " + meters(a) : pairM(a,l)) : "";
+    const cutMM = (num(ca)!==null && num(cl)!==null)
+      ? (isCircle(m) ? "Ø " + millimeters(ca) : pairMM(ca,cl)) : "";
+    const cutM = (num(ca)!==null && num(cl)!==null)
+      ? (isCircle(m) ? "Ø " + meters(ca) : pairM(ca,cl)) : "";
+
+    const finalBlock = finalMM ? `
+      <div class="measure final-measure">
+        <div class="measure-kicker">DIMENSIÓN DE PRODUCTO</div>
         <div class="measure-title">Medida final</div>
-        <div class="measure-main">${isCircle(m) ? "Ø " + html(meters(a)) : html(pairM(a,l))}</div>
-        <div class="measure-sub">${isCircle(m) ? "Ø " + html(millimeters(a)) : html(pairMM(a,l))}</div>
+        <div class="measure-main">${html(finalMM)}</div>
+        ${finalM ? `<div class="measure-sub">${html(finalM)}</div>` : ""}
       </div>` : "";
 
-    const cutBlock = (num(ca)!==null && num(cl)!==null) ? `
+    const cutBlock = cutMM ? `
       <div class="measure cut">
+        <div class="measure-kicker">DIMENSIÓN PARA CORTE</div>
         <div class="measure-title">Medida al corte</div>
-        <div class="measure-main">${isCircle(m) ? "Ø " + html(meters(ca)) : html(pairM(ca,cl))}</div>
-        <div class="measure-sub">${isCircle(m) ? "Ø " + html(millimeters(ca)) : html(pairMM(ca,cl))}</div>
+        <div class="measure-main">${html(cutMM)}</div>
+        ${cutM ? `<div class="measure-sub">${html(cutM)}</div>` : ""}
       </div>` : "";
 
-    const finalTol = first(m,["Tol. (+/-)","Tol.\n(+/-)","Tolerancia final"]);
-    const cutTol = first(m,["Tolerancia de corte","Tol. Corte (+/-)"]);
+    const finalTol = first(m,[
+      "Tolerancia Final (mm)","Tol. (+/-)","Tol.\n(+/-)","Tolerancia final"
+    ]);
+    const cutTol = first(m,[
+      "Tolerancia Corte (mm)","Tolerancia de corte","Tol. Corte (+/-)"
+    ]);
     const tolRows = [
-      ["Tolerancia final",toleranceDisplay(finalTol)],
+      ["Tolerancia medida final",toleranceDisplay(finalTol)],
       ["Tolerancia de corte",toleranceDisplay(cutTol)]
     ].filter(([,v])=>!blank(v));
 
@@ -629,39 +729,55 @@
     const maxL = first(m,["Largo CORTE  Max (mts)","Largo CORTE Max (mts)"]);
     const minA = first(m,["Ancho CORTE Min (mts)"]);
     const minL = first(m,["Largo CORTE Min (mts)"]);
-    const limits = [
-      ["Ancho CORTE Max",maxA],
-      ["Largo CORTE Max",maxL],
-      ["Ancho CORTE Min",minA],
-      ["Largo CORTE Min",minL]
+
+    const maxLimits = [
+      [{ tag:"MAX", name:"Ancho CORTE" }, maxA],
+      [{ tag:"MAX", name:"Largo CORTE" }, maxL]
+    ].filter(([,v])=>!blank(v));
+    const minLimits = [
+      [{ tag:"MIN", name:"Ancho CORTE" }, minA],
+      [{ tag:"MIN", name:"Largo CORTE" }, minL]
     ].filter(([,v])=>!blank(v));
 
-    $("detail").innerHTML = `
-      ${basics.length ? `<div class="panel"><div class="basic-grid">${
-        basics.map(([k,v])=>`<div class="label">${html(k)}</div><div class="value">${html(v)}</div>`).join("")
-      }</div></div>` : ""}
-
-      ${chips.length ? `<div class="chips">${
-        chips.map(([k,v])=>`<div class="chip"><div class="label">${html(k)}</div><div class="value">${html(v)}</div></div>`).join("")
-      }</div>` : ""}
-
-      ${(finalBlock || cutBlock) ? `<div class="measure-grid">${finalBlock}${cutBlock}</div>` : ""}
-
-      ${tolRows.length ? `<div class="panel">
-        <h3 class="section-title">Tolerancias</h3>
-        ${tolRows.map(([k,v])=>`<div class="tol-row"><span>${html(k)}</span><strong>${html(v)}</strong></div>`).join("")}
-      </div>` : ""}
-
-      ${limits.length ? `<div class="panel">
-        <h3 class="section-title">Máximos y mínimos de corte</h3>
+    const limitGroup = (label, tone, rows) => rows.length ? `
+      <div class="limit-group ${tone}">
+        <div class="limit-group-title"><strong>${label}</strong><span>${label === "MAX" ? "Límite superior permitido" : "Límite inferior permitido"}</span></div>
         <div class="limits">
-          ${limits.map(([k,v])=>`<div class="limit">
-            <div class="label">${html(k)}</div>
-            <div class="value">${html(meters(v))}</div>
-            <div class="limit-mm">${html(millimeters(v))}</div>
+          ${rows.map(([meta,v])=>`<div class="limit ${tone}">
+            <div class="limit-head">
+              <strong class="limit-tag">${html(meta.tag)}</strong>
+              <span class="limit-name">${html(meta.name)}</span>
+            </div>
+            <div class="limit-value-mm">${html(millimeters(v))}</div>
+            <div class="limit-value-m">${html(meters(v))}</div>
           </div>`).join("")}
         </div>
-      </div>` : ""}
+      </div>` : "";
+
+    $("detail").innerHTML = `
+      ${info.length ? `<section class="panel info-panel">
+        <h3 class="section-title">Información general</h3>
+        <div class="info-grid">
+          ${info.map(([k,v])=>`<div class="info-item"><div class="label">${html(k)}</div><div class="value">${html(v)}</div></div>`).join("")}
+        </div>
+      </section>` : ""}
+
+      ${(finalBlock || cutBlock) ? `<section class="measure-grid">${finalBlock}${cutBlock}</section>` : ""}
+
+      ${tolRows.length ? `<section class="panel tolerance-panel">
+        <h3 class="section-title">Tolerancias dimensionales</h3>
+        <div class="tol-list">
+          ${tolRows.map(([k,v])=>`<div class="tol-row"><span>${html(k)}</span><strong>${html(v)}</strong></div>`).join("")}
+        </div>
+      </section>` : ""}
+
+      ${(maxLimits.length || minLimits.length) ? `<section class="panel limits-panel">
+        <h3 class="section-title">Límites de corte</h3>
+        <div class="limit-groups">
+          ${limitGroup("MAX","max",maxLimits)}
+          ${limitGroup("MIN","min",minLimits)}
+        </div>
+      </section>` : ""}
     `;
 
     show("detail");
@@ -671,33 +787,23 @@
   function show(view){
     $("modelsView").classList.toggle("active",view==="models");
     $("detailView").classList.toggle("active",view==="detail");
-    $("comingView").classList.toggle("active",view==="coming");
   }
-
-  const titles = {
-    docs:"Documentación",
-    drawings:"Planos / Dibujos técnicos",
-    production:"Producción",
-    plans:"Planes de Producción",
-    quality:"Rechazo / Calidad",
-    more:"Más módulos"
-  };
 
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-route]");
     if(!b) return;
     const route = b.dataset.route;
 
-    document.querySelectorAll("[data-route]").forEach(x=>x.classList.remove("active"));
-
-    if(route==="models"){
-      document.querySelectorAll('[data-route="models"]').forEach(x=>x.classList.add("active"));
-      show("models");
-    }else{
-      document.querySelectorAll(`[data-route="${route}"]`).forEach(x=>x.classList.add("active"));
-      $("comingTitle").textContent = titles[route] || "Próximamente";
-      show("coming");
+    // V1: sólo Lista de Modelos está habilitada. Los demás módulos permanecen visibles
+    // en el menú como arquitectura futura, sin abrir una tarjeta grande de "Próximamente".
+    if(route !== "models"){
+      e.preventDefault();
+      return;
     }
+
+    document.querySelectorAll("[data-route]").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll('[data-route="models"]').forEach(x=>x.classList.add("active"));
+    show("models");
   });
 
   $("back").onclick = () => show("models");
