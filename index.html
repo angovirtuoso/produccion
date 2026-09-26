@@ -621,6 +621,7 @@
   const REFRESH_MS = 10000;
   let models = [];
   let selectedModelName = "";
+  let currentView = "models";
   let jsonpScript = null;
   let jsonpTimer = null;
 
@@ -724,9 +725,9 @@
     renderCards();
     updateClock(payload.updatedAt);
 
-    if(selectedModelName){
+    if(currentView === "detail" && selectedModelName){
       const refreshed = models.find(x => String(x["Modelo"]) === selectedModelName);
-      if(refreshed) renderDetail(refreshed, false);
+      if(refreshed) renderDetail(refreshed, false, false);
     }
   };
 
@@ -839,11 +840,11 @@
     }).join("");
 
     document.querySelectorAll(".model-card").forEach(card => {
-      card.onclick = () => renderDetail(filtered[Number(card.dataset.i)], true);
+      card.onclick = () => renderDetail(filtered[Number(card.dataset.i)], true, true);
     });
   }
 
-  function renderDetail(m, scroll=true){
+  function renderDetail(m, scroll=true, pushHistory=false){
     selectedModelName = String(m["Modelo"] ?? "");
     $("detailModel").textContent = selectedModelName || "Modelo";
     $("detailClient").textContent = blank(m["Cliente"]) ? "Modelo autorizado" : String(m["Cliente"]);
@@ -987,13 +988,66 @@
     `;
 
     show("detail");
+
+    if(pushHistory){
+      const url = new URL(window.location.href);
+      url.searchParams.set("modelo", selectedModelName);
+      history.pushState(
+        {view:"detail", model:selectedModelName},
+        "",
+        url.pathname + url.search + url.hash
+      );
+    }
+
     if(scroll) window.scrollTo({top:0,behavior:"smooth"});
   }
 
   function show(view){
+    currentView = view;
     $("modelsView").classList.toggle("active",view==="models");
     $("detailView").classList.toggle("active",view==="detail");
+
+    // Fundamental: estando en la lista no debe quedar una ficha "seleccionada"
+    // que el refresco automático pueda volver a abrir.
+    if(view === "models"){
+      selectedModelName = "";
+    }
   }
+
+  function showModelsFromNavigation(){
+    // Si la ficha fue abierta desde la lista, regresar usa el historial real.
+    // Esto hace que también funcionen Back y Forward del navegador.
+    if(currentView === "detail" && history.state?.view === "detail"){
+      history.back();
+      return;
+    }
+
+    show("models");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("modelo");
+    history.replaceState(
+      {view:"models"},
+      "",
+      url.pathname + url.search + url.hash
+    );
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  window.addEventListener("popstate", (event) => {
+    const state = event.state;
+
+    if(state?.view === "detail" && state.model){
+      const model = models.find(x => String(x["Modelo"]) === String(state.model));
+      if(model){
+        renderDetail(model, false, false);
+        window.scrollTo({top:0,behavior:"auto"});
+        return;
+      }
+    }
+
+    show("models");
+    window.scrollTo({top:0,behavior:"auto"});
+  });
 
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-route]");
@@ -1009,10 +1063,10 @@
 
     document.querySelectorAll("[data-route]").forEach(x=>x.classList.remove("active"));
     document.querySelectorAll('[data-route="models"]').forEach(x=>x.classList.add("active"));
-    show("models");
+    showModelsFromNavigation();
   });
 
-  $("back").onclick = () => show("models");
+  $("back").onclick = showModelsFromNavigation;
   $("search").oninput = renderCards;
   $("client").onchange = () => {
     rebuildFilters("client");
@@ -1022,6 +1076,18 @@
     rebuildFilters("thickness");
     renderCards();
   };
+
+  // Estado inicial del historial: Lista de Modelos.
+  // Conservamos otros parámetros si algún día se agregan, pero removemos "modelo".
+  {
+    const initialUrl = new URL(window.location.href);
+    initialUrl.searchParams.delete("modelo");
+    history.replaceState(
+      {view:"models"},
+      "",
+      initialUrl.pathname + initialUrl.search + initialUrl.hash
+    );
+  }
 
   loadData();
   setInterval(loadData, REFRESH_MS);
