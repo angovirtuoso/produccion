@@ -14,18 +14,22 @@ module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "GET") {
-    return res.status(405).json({ ok:false });
+    return res.status(405).json({ ok:false, error:"Método no permitido." });
   }
 
   const token = readCookie(req, COOKIE);
+
   if (!token) {
-    return res.status(401).json({ ok:false, auth:false });
+    return res.status(401).json({
+      ok:false,
+      auth:false,
+      error:"No hay una sesión activa."
+    });
   }
 
   if (!APPS_SCRIPT_URL) {
     return res.status(500).json({
       ok:false,
-      auth:false,
       error:"APPS_SCRIPT_URL no está cargada en Vercel."
     });
   }
@@ -46,19 +50,33 @@ module.exports = async function handler(req, res) {
     } catch (_) {
       return res.status(502).json({
         ok:false,
-        error:"Apps Script no devolvió JSON. HTTP " + r.status
+        error:
+          "Apps Script no devolvió JSON al consultar ModelosLI. HTTP " +
+          r.status + "."
       });
     }
 
-    if (payload?.ok !== true || payload?.auth !== true) {
+    // SOLO una respuesta explícita auth:false invalida la sesión.
+    // Un error de lectura, caché, permisos o datos de ModelosLI NO hace logout.
+    if (payload?.auth === false) {
       res.setHeader(
         "Set-Cookie",
         `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`
       );
+
       return res.status(401).json({
         ok:false,
         auth:false,
-        error:payload?.error || "Sesión inválida."
+        error:payload?.error || "Sesión inválida o vencida."
+      });
+    }
+
+    if (payload?.ok !== true) {
+      return res.status(502).json({
+        ok:false,
+        auth:true,
+        error:payload?.error || "No se pudo leer ModelosLI.",
+        detail:payload?.detail || undefined
       });
     }
 
@@ -67,7 +85,10 @@ module.exports = async function handler(req, res) {
   } catch (err) {
     return res.status(502).json({
       ok:false,
-      error:"No se pudo consultar ModelosLI."
+      auth:true,
+      error:
+        "No se pudo consultar ModelosLI: " +
+        String(err?.message || err)
     });
   }
 };
