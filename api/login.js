@@ -1,18 +1,16 @@
-const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
-const COOKIE = "prodiesa_session";
+const {
+  appsGet,
+  credentialDigest,
+  createSession,
+  setSessionCookie,
+  safeEqual
+} = require("../lib/prodiesa-backend");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "POST") {
     return res.status(405).json({ ok:false, error:"Método no permitido." });
-  }
-
-  if (!APPS_SCRIPT_URL) {
-    return res.status(500).json({
-      ok:false,
-      error:"Vercel no tiene cargada la variable APPS_SCRIPT_URL en este deployment."
-    });
   }
 
   try {
@@ -30,59 +28,42 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const r = await fetch(APPS_SCRIPT_URL, {
-      method:"POST",
-      redirect:"follow",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        action:"login",
-        username,
-        password
-      })
-    });
+    const { payload } = await appsGet("auth");
 
-    const raw = await r.text();
-
-    let payload;
-    try {
-      payload = JSON.parse(raw);
-    } catch (_) {
+    if (payload?.ok !== true || !Array.isArray(payload.users)) {
       return res.status(502).json({
         ok:false,
-        error:
-          "Apps Script no devolvió JSON. HTTP " + r.status +
-          ". Respuesta: " +
-          raw.replace(/\s+/g," ").slice(0,180)
+        error:payload?.error || "No se pudo consultar la hoja Accesos."
       });
     }
 
-    if (payload?.ok !== true || !payload?.token) {
+    const target = username.toLowerCase();
+    const row = payload.users.find(
+      x => String(x.username || "").trim().toLowerCase() === target
+    );
+
+    const calculated = credentialDigest(username, password);
+    const valid = row && safeEqual(calculated, row.credential);
+
+    if (!valid) {
       return res.status(401).json({
         ok:false,
-        error:payload?.error || "Usuario o contraseña incorrectos.",
-        detail:payload?.detail || undefined
+        error:"Usuario o contraseña incorrectos."
       });
     }
 
-    const maxAge = Number(payload.expiresInSeconds || 28800);
-
-    res.setHeader(
-      "Set-Cookie",
-      `${COOKIE}=${encodeURIComponent(payload.token)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`
-    );
+    const token = createSession(row.username);
+    setSessionCookie(res, token);
 
     return res.status(200).json({
       ok:true,
-      user:payload.user || username
+      user:row.username
     });
 
   } catch (err) {
-    console.error("PRODIESA LOGIN ERROR:", err);
-
     return res.status(502).json({
       ok:false,
-      error:"Vercel no pudo contactar Apps Script: " +
-        String(err?.message || err)
+      error:String(err?.message || err)
     });
   }
 };

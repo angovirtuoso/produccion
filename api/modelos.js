@@ -1,73 +1,37 @@
-const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
-const COOKIE = "prodiesa_session";
-
-function readCookie(req, name) {
-  const raw = String(req.headers.cookie || "");
-  for (const part of raw.split(";")) {
-    const [k, ...rest] = part.trim().split("=");
-    if (k === name) return decodeURIComponent(rest.join("=") || "");
-  }
-  return "";
-}
+const {
+  appsGet,
+  verifySession,
+  readCookie,
+  clearSessionCookie
+} = require("../lib/prodiesa-backend");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "GET") {
-    return res.status(405).json({ ok:false, error:"Método no permitido." });
+    return res.status(405).json({ ok:false });
   }
 
-  const token = readCookie(req, COOKIE);
+  const session = verifySession(readCookie(req));
 
-  if (!token) {
+  if (!session) {
+    clearSessionCookie(res);
     return res.status(401).json({
       ok:false,
       auth:false,
-      error:"No hay una sesión activa."
-    });
-  }
-
-  if (!APPS_SCRIPT_URL) {
-    return res.status(500).json({
-      ok:false,
-      error:"APPS_SCRIPT_URL no está cargada en Vercel."
+      error:"Sesión inválida o vencida."
     });
   }
 
   try {
-    const r = await fetch(APPS_SCRIPT_URL, {
-      method:"POST",
-      redirect:"follow",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ action:"models", token })
-    });
+    const { payload } = await appsGet("models", session.u);
 
-    const raw = await r.text();
-    let payload;
-
-    try {
-      payload = JSON.parse(raw);
-    } catch (_) {
-      return res.status(502).json({
-        ok:false,
-        error:
-          "Apps Script no devolvió JSON al consultar ModelosLI. HTTP " +
-          r.status + "."
-      });
-    }
-
-    // SOLO una respuesta explícita auth:false invalida la sesión.
-    // Un error de lectura, caché, permisos o datos de ModelosLI NO hace logout.
     if (payload?.auth === false) {
-      res.setHeader(
-        "Set-Cookie",
-        `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`
-      );
-
+      clearSessionCookie(res);
       return res.status(401).json({
         ok:false,
         auth:false,
-        error:payload?.error || "Sesión inválida o vencida."
+        error:payload?.error || "Usuario inactivo."
       });
     }
 
@@ -86,9 +50,7 @@ module.exports = async function handler(req, res) {
     return res.status(502).json({
       ok:false,
       auth:true,
-      error:
-        "No se pudo consultar ModelosLI: " +
-        String(err?.message || err)
+      error:String(err?.message || err)
     });
   }
 };
